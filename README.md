@@ -29,6 +29,10 @@ The fs (File System) module in Node.js is used for handling files. It is a core 
 - mkdirSync
 - ...and more
 
-## Synchronous vs Asynchronous Methods
+## Synchronous / Blocking request vs Asynchronous/ Non blocking request
  - Methods with "Sync" (e.g., writeFileSync, readFileSync) run synchronously, meaning they block execution until the operation is complete.
  - Methods without "Sync" (e.g., writeFile, readFile) run asynchronously, meaning they don’t block execution and instead use callbacks or Promises.
+
+
+## What is a Thread Pool and How Does It Work? 
+A thread pool is a mechanism that manages worker threads to handle tasks efficiently. By default, Node.js uses 4 worker threads, but you can increase this limit based on system capacity using the `os` module.  
