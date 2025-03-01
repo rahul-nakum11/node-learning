@@ -4,7 +4,8 @@
   "description": "learning how to work with node express api",
   "main": "index.js",
   "scripts": {
-    "test": "node"
+    "test": "node",
+    "start":"node index.js"
   },
   "repository": {
     "type": "git",
