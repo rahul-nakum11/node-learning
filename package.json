@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node",
-    "start":"node index.js"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +16,8 @@
     "learning"
   ],
   "author": "Rahul",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
 }

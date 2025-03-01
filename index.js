@@ -1,27 +1,70 @@
+const express = require("express");
+const users = require("./MOCK_DATA.json");
 const fs = require("fs");
-const http = require("http");
-const url = require("url");
-const myServer = http.createServer((req, res) => {
-  if (req.url === "/favicon.ico") return res.end();
-  const log = `${Date.now()} : ${req.url} New requiest received\n`;
-  const myUrl = url.parse(req.url, true);
-  console.log(myUrl);
-  fs.appendFile("logger.txt", log, (err, data) => {
-    switch (myUrl.pathname) {
-      case "/":
-        res.end("Home Page");
-        break;
-      case "/about":
-        res.end("About Page");
-        break;
-      case "/contact":
-        res.end("Contact Page");
-        break;
-      default:
-        res.end("404 Not FOund");
-        break;
-    }
+const app = express();
+const port = 8000;
+
+app.use(express.urlencoded({ extended: false }));
+
+app.get("/", (req, res) => {
+  res.send("Hello Express!");
+});
+
+app.get("/api/users", (req, res) => {
+  res.json(users);
+});
+
+app.post("/api/users/", (req, res) => {
+  users.push({ ...req.body, id: users.length + 1 });
+  fs.writeFile("./MOCK_DATA.json", JSON.stringify(users, null, 2), (err) => {
+    if (err) res.json({ status: err, id: null });
+    res.json({ status: "scuccess", id: users.length });
   });
 });
 
-myServer.listen(8000, () => console.log("server started!"));
+app
+  .route("/api/users/:id")
+  .get((req, res) => {
+    const userId = Number(req.params.id);
+    const user = users.find(({ id }) => id === userId);
+    console.log(user, userId);
+
+    if (user === undefined) {
+      res.json({ status: "error", message: "user not found" });
+      return;
+    }
+    res.json(user);
+  })
+  .patch((req, res) => {
+    const userId = Number(req.params.id);
+    const userIndex = users.findIndex(({ id }) => id === userId);
+    if (userIndex === -1) {
+      res.json({ status: "error", message: "user not found" });
+      return;
+    }
+    users[userIndex] = { ...users[userIndex], ...req.body };
+    fs.writeFile("./MOCK_DATA.json", JSON.stringify(users, null, 2), (err) => {
+      if (err) res.json({ status: err, id: userId });
+      res.json({ status: "scuccess", id: userId });
+    });
+  })
+  .delete((req, res) => {
+    const userId = Number(req.params.id);
+    if (!userId) {
+      res.json({ status: "error", message: "user id required" });
+      return;
+    }
+    let fltUsers = users.filter(({ id }) => id !== userId);
+    fs.writeFile(
+      "./MOCK_DATA.json",
+      JSON.stringify(fltUsers, null, 2),
+      (err) => {
+        if (err) res.json({ status: err, message: "user not deleted" });
+        res.json({ status: "scuccess", message: "user deleted!" });
+      }
+    );
+  });
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});
