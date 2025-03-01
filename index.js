@@ -6,6 +6,14 @@ const port = 8000;
 
 app.use(express.urlencoded({ extended: false }));
 
+app.use((req, res, next) => {
+  const log = `${Date.now()} ${req.ip} ${req.method} ${req.path}\n`;
+  fs.appendFile("./logger.txt", log, (err) => {
+    if (err) return;
+    next();
+  });
+});
+
 app.get("/", (req, res) => {
   res.send("Hello Express!");
 });
