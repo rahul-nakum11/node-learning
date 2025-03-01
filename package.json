@@ -1,0 +1,19 @@
+{
+  "name": "node-learning",
+  "version": "1.0.0",
+  "description": "learning how to work with node express api",
+  "main": "index.js",
+  "scripts": {
+    "test": "node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "node-learning"
+  },
+  "keywords": [
+    "node",
+    "learning"
+  ],
+  "author": "Rahul",
+  "license": "ISC"
+}
