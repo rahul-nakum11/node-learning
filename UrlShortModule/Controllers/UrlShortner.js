@@ -3,7 +3,7 @@ const { nanoid } = require("nanoid");
 
 async function handleUrlShortner(req, res) {
   const urls = await urlModel.find({});
-  return res.render("index", { urls });
+  return res.render("urlDashboard", { urls });
 }
 
 async function handleGenerateNewShortURL(req, res) {
@@ -29,14 +29,14 @@ async function handleUrlRedirect(req, res) {
     }
   );
 
-  res.redirect(entry.redirectUrl);
+  return res.redirect(entry.redirectUrl);
 }
 
 async function handleUrlClickAnalytics(req, res) {
   const shortId = req.params.shortId;
   const results = await urlModel.findOne({ shortId });
 
-  res.json({
+  return res.json({
     totalClicks: results.visitHistory.length,
     analytics: results.visitHistory,
   });

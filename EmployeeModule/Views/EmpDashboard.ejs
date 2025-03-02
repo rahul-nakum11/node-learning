@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employees List</title>
+</head>
+
+<body>
+    <h1>Employees List</h1>
+    <a href="/employees/signin">Employee Signin</a>
+    <a href="/employees/signup">Employee Signup</a>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>SN</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Job Title</th>
+                <th>Salary</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% allEmployees.forEach((emp, index)=> { %>
+                <tr>
+                    <td>
+                        <%= index+1 %>
+                    </td>
+                    <td>
+                        <%= emp.name %>
+                    </td>
+                    <td>
+                        <%= emp.email %>
+                    </td>
+                    <td>
+                        <%= emp.job_title %>
+                    </td>
+                </tr>
+                <% }) %>
+        </tbody>
+    </table>
+</body>
+
+</html>
