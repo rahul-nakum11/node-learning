@@ -5,7 +5,7 @@ const {
   handleGetUser,
   handleUpdateUser,
   handleDeleteUser,
-} = require("../Controllers/User");
+} = require("./Controllers/User");
 const UserRoutes = express.Router();
 
 UserRoutes.route("/").get(handleGetAllUsers).post(handleCreateUser);
@@ -15,4 +15,4 @@ UserRoutes.route("/:id")
   .patch(handleUpdateUser)
   .delete(handleDeleteUser);
 
-module.exports = { UserRoutes };
+module.exports = UserRoutes;

@@ -1,6 +1,8 @@
 const express = require("express");
 const { connectMongoDb } = require("./dbConnection");
-const { UserRoutes } = require("./Routes/UserRoutes");
+const UserRoutes = require("./UserModule/UserRoutes");
+const UrlShortnerRoutes = require("./UrlShortModule/UrlShortnerRoutes");
+
 const { logRequest } = require("./Middlewares");
 const app = express();
 const port = 8000;
@@ -20,6 +22,9 @@ app.get("/", async (req, res) => {
 
 // User Routers
 app.use("/api/users", UserRoutes);
+
+// URL shortner Routers
+app.use("/url-short", UrlShortnerRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
