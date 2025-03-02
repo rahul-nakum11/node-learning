@@ -1,8 +1,31 @@
 const express = require("express");
-const users = require("./MOCK_DATA.json");
+const mongoose = require("mongoose");
 const fs = require("fs");
 const app = express();
 const port = 8000;
+
+//connect mongodb
+mongoose
+  .connect("mongodb://127.0.0.1:27017/demo_with_mango")
+  .then(() => console.log("Database Connected!"))
+  .catch((err) => console.log("Database Connection Error", err));
+
+// create schema
+const userSchema = new mongoose.Schema(
+  {
+    first_name: { type: String, required: true },
+    last_name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    gender: { type: String, required: true },
+    job_title: { type: String },
+    salary: { type: String },
+    company_name: { type: String },
+  },
+  { timestamps: true }
+);
+
+// Create model
+const User = mongoose.model("users", userSchema);
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -14,63 +37,40 @@ app.use((req, res, next) => {
   });
 });
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
   res.send("Hello Express!");
 });
 
-app.get("/api/users", (req, res) => {
+app.get("/api/users", async (req, res) => {
+  const users = await User.find({});
   res.json(users);
 });
 
-app.post("/api/users/", (req, res) => {
-  users.push({ ...req.body, id: users.length + 1 });
-  fs.writeFile("./MOCK_DATA.json", JSON.stringify(users, null, 2), (err) => {
-    if (err) res.json({ status: err, id: null });
-    res.json({ status: "scuccess", id: users.length });
-  });
+app.post("/api/users/", async (req, res) => {
+  const user = await User.create({ ...req.body });
+
+  res.status(201).json({ status: "scuccess", data: user });
 });
 
 app
   .route("/api/users/:id")
-  .get((req, res) => {
-    const userId = Number(req.params.id);
-    const user = users.find(({ id }) => id === userId);
-    console.log(user, userId);
-
-    if (user === undefined) {
-      res.json({ status: "error", message: "user not found" });
-      return;
+  .get(async (req, res) => {
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({ status: "error", msg: "User not found!" });
     }
     res.json(user);
   })
-  .patch((req, res) => {
-    const userId = Number(req.params.id);
-    const userIndex = users.findIndex(({ id }) => id === userId);
-    if (userIndex === -1) {
-      res.json({ status: "error", message: "user not found" });
-      return;
-    }
-    users[userIndex] = { ...users[userIndex], ...req.body };
-    fs.writeFile("./MOCK_DATA.json", JSON.stringify(users, null, 2), (err) => {
-      if (err) res.json({ status: err, id: userId });
-      res.json({ status: "scuccess", id: userId });
-    });
+  .patch(async (req, res) => {
+    const userId = req.params.id;
+    const user = await User.findByIdAndUpdate(userId, { ...req.body });
+    res.json({ status: "scuccess" });
   })
-  .delete((req, res) => {
-    const userId = Number(req.params.id);
-    if (!userId) {
-      res.json({ status: "error", message: "user id required" });
-      return;
-    }
-    let fltUsers = users.filter(({ id }) => id !== userId);
-    fs.writeFile(
-      "./MOCK_DATA.json",
-      JSON.stringify(fltUsers, null, 2),
-      (err) => {
-        if (err) res.json({ status: err, message: "user not deleted" });
-        res.json({ status: "scuccess", message: "user deleted!" });
-      }
-    );
+  .delete(async (req, res) => {
+    const userId = req.params.id;
+    await User.findByIdAndDelete(userId);
+    res.json({ status: "scuccess", message: "user deleted!" });
   });
 
 app.listen(port, () => {
