@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const { connectMongoDb } = require("./dbConnection");
 const UserRoutes = require("./UserModule/UserRoutes");
 const UrlShortnerRoutes = require("./UrlShortModule/UrlShortnerRoutes");
@@ -15,6 +16,13 @@ connectMongoDb("mongodb://127.0.0.1:27017/demo_with_mango")
 // middleware to parse form data
 app.use(express.urlencoded({ extended: false }));
 app.use(logRequest("logger.txt")); // middleware to log incomming requests
+
+app.set("view engine", "ejs"); // set view engine
+// Set multiple view directories
+app.set("views", [
+  path.join(__dirname, "UserModule", "views"),
+  path.join(__dirname, "UrlShortModule", "views"),
+]);
 
 app.get("/", async (req, res) => {
   res.send("Hello Express!");

@@ -3,7 +3,7 @@ const { nanoid } = require("nanoid");
 
 async function handleUrlShortner(req, res) {
   const urls = await urlModel.find({});
-  return res.json(urls);
+  return res.render("index", { urls });
 }
 
 async function handleGenerateNewShortURL(req, res) {

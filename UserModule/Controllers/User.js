@@ -2,7 +2,7 @@ const { User } = require("../Models/User");
 
 async function handleGetAllUsers(req, res) {
   const allUsers = await User.find({});
-  return res.json(allUsers);
+  return res.render("index", { allUsers });
 }
 
 async function handleCreateUser(req, res) {

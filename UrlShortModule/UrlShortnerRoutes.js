@@ -5,6 +5,7 @@ const {
   handleUrlRedirect,
   handleUrlClickAnalytics,
 } = require("./Controllers/UrlShortner");
+
 const UrlShortnerRoutes = express.Router();
 
 UrlShortnerRoutes.route("/")
